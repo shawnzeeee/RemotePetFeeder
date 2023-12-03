@@ -51,3 +51,9 @@ cd ../
 cd ../
 make
 ```
+5) Running on beaglebone, Do this if object file does not recongnize libwebsockets
+```
+export LD_LIBRARY_PATH=/mnt/remote/myApps/ENSC351_PROJECT/external/libwebsockets/build/lib:$LD_LIBRARY_PATH
+./main
+
+```

@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Client Website</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 50px;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Welcome to the client website that connects the beaglebone to our server.</h1>
+
+    <button id="sendRequestButton">Dispense food</button>
+
+    <script>
+
+        function sendRequest() {
+            const serverUrl = 'http://127.0.0.1:3000/';
+
+            const options = {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+            };
+            fetch(serverUrl, options)
+                .then(response => response.json())
+                .then(data => {
+                    console.log('Response:', data);
+                });
+        }
+        // JavaScript code
+        document.getElementById('sendRequestButton').addEventListener('click', sendRequest, function() {
+            alert('Dispensing food.');
+        });
+    </script>
+
+</body>
+</html>

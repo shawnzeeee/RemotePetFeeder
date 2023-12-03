@@ -1,6 +1,6 @@
 # ENSC351_PROJECT
 
-1) Clone project
+1) After cloning project
 ```
 git submodule init
 git submodule update
@@ -46,5 +46,8 @@ cd external/libwebsockets
 mkdir build
 cd build
 cmake .. -DCMAKE_TOOLCHAIN_FILE=../arm-toolchain.cmake -DLWS_WITH_SSL=OFF -DLWS_WITHOUT_EXTENSIONS=ON
+make
+cd ../
+cd ../
 make
 ```

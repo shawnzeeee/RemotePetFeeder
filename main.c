@@ -2,15 +2,28 @@
 #include <string.h>
 #include <stdio.h>
 
-static int testVariable = 0;
-
+static int count = 0;
 static int callback_ws(struct lws *wsi, enum lws_callback_reasons reason, void *user, void *in, size_t len) {
     switch (reason) {
+        case LWS_CALLBACK_CLIENT_ESTABLISHED:
+            lws_callback_on_writable(wsi);
+            break;
+
         case LWS_CALLBACK_CLIENT_RECEIVE:
             printf("Received data: %s\n", (char *)in);
             if (strcmp((char *)in, "changeVariable") == 0) {
-                testVariable = 1;
-                printf("Variable changed to: %d\n", testVariable);
+                count += 1;
+                printf("Variable changed to: %d\n", count);
+            }
+            break;
+        case LWS_CALLBACK_CLIENT_WRITEABLE:
+            // Example: sending a message
+            {
+                unsigned char buf[LWS_SEND_BUFFER_PRE_PADDING + 512 +
+                                  LWS_SEND_BUFFER_POST_PADDING];
+                unsigned char *p = &buf[LWS_SEND_BUFFER_PRE_PADDING];
+                size_t n = sprintf((char *)p, "Hello from C client");
+                lws_write(wsi, p, n, LWS_WRITE_TEXT);
             }
             break;
 
@@ -22,37 +35,33 @@ static int callback_ws(struct lws *wsi, enum lws_callback_reasons reason, void *
 
 int main(void) {
     struct lws_context_creation_info info;
-    memset(&info, 0, sizeof(info));
+    memset(&info, 0, sizeof info);
+
+    struct lws_protocols protocols[] = {
+        { "my-protocol", callback_ws, 0, 512, },
+        { NULL, NULL, 0, 0 } /* terminator */
+    };
 
     info.port = CONTEXT_PORT_NO_LISTEN;
-    info.protocols = (const struct lws_protocols[]) {
-        { "websocket-protocol", callback_ws, 0, 0 },
-        { NULL, NULL, 0, 0 }
-    };
+    info.protocols = protocols;
     info.gid = -1;
     info.uid = -1;
 
     struct lws_context *context = lws_create_context(&info);
-    if (context == NULL) {
-        fprintf(stderr, "lws init failed\n");
-        return -1;
-    }
 
-    struct lws_client_connect_info connectInfo = {
-        .context = context,
-        .address = "localhost",
-        .port = 8080,
-        .path = "/",
-        .protocol = "websocket-protocol",
-        .ssl_connection = 0,
-    };
+    // Client connection
+    struct lws_client_connect_info ccinfo = {0};
+    ccinfo.context = context;
+    ccinfo.address = "192.168.182.128";
+    ccinfo.port = 3000;
+    ccinfo.path = "/ws";
+    ccinfo.host = lws_canonical_hostname(context);
+    ccinfo.origin = "http://192.168.182.128";
+    ccinfo.protocol = protocols[0].name;
 
-    struct lws *ws = lws_client_connect_via_info(&connectInfo);
-    if (ws == NULL) {
-        fprintf(stderr, "WebSocket connection failed\n");
-        return -1;
-    }
+    struct lws *wsi = lws_client_connect_via_info(&ccinfo);
 
+    // Event loop
     while (1) {
         lws_service(context, 50);
     }
@@ -60,3 +69,5 @@ int main(void) {
     lws_context_destroy(context);
     return 0;
 }
+
+

@@ -26,7 +26,7 @@
     <script>
 
         function sendRequest() {
-            const serverUrl = 'http://127.0.0.1:3000/';
+            const serverUrl = 'http://192.168.182.128/trigger';
 
             const options = {
                 method: 'GET',
@@ -42,6 +42,7 @@
         }
         // JavaScript code
         document.getElementById('sendRequestButton').addEventListener('click', sendRequest, function() {
+            console.log("pressed");
             alert('Dispensing food.');
         });
     </script>

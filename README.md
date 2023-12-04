@@ -9,6 +9,9 @@ git submodule update
 ```
 sudo apt-get update
 sudo apt-get install cmake
+sudo apt install nodejs
+sudo apt install npm
+
 
 ```
 3) Create a toolchain file to compile libwebsockets with arm

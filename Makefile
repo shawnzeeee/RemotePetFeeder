@@ -1,4 +1,4 @@
-CC=arm-linux-gnueabihf-gcc
+CC=arm-linux-gnueabihf-gcc -static
 CFLAGS=-Iexternal/libwebsockets/build/include
 LDFLAGS=-Lexternal/libwebsockets/build/lib -lwebsockets
 TARGET=main

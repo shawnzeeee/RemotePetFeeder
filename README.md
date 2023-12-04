@@ -50,8 +50,7 @@ mkdir build
 cd build
 cmake .. -DCMAKE_TOOLCHAIN_FILE=../arm-toolchain.cmake -DLWS_WITH_SSL=OFF -DLWS_WITHOUT_EXTENSIONS=ON
 make
-cd ../
-cd ../
+//Go back to repo folder
 make
 ```
 5) Running on beaglebone, Do this if object file does not recongnize libwebsockets

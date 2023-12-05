@@ -8,7 +8,12 @@ const app = express();
 const WebSocket = require('ws');
 const cors = require('cors');
 
-app.use(cors());
+const corsOptions = {
+    origin: 'http://192.168.182.128/trigger', // Replace with the origin you are sending requests from
+    optionsSuccessStatus: 200 // Some legacy browsers (IE11, various SmartTVs) choke on 204
+};
+
+app.use(cors(cors(corsOptions)));
 
 var server = http.createServer(function (req, res) {   //create web server
     if (req.url == '/') { //check the URL of the current request

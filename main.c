@@ -1,6 +1,9 @@
 #include <libwebsockets.h>
 #include <string.h>
 #include <stdio.h>
+#include <unistd.h>
+#include "solenoid.h"
+
 
 static int count = 0;
 static int callback_ws(struct lws *wsi, enum lws_callback_reasons reason, void *user, void *in, size_t len) {
@@ -12,8 +15,9 @@ static int callback_ws(struct lws *wsi, enum lws_callback_reasons reason, void *
         case LWS_CALLBACK_CLIENT_RECEIVE:
             printf("Received data: %s\n", (char *)in);
             if (strcmp((char *)in, "changeVariable") == 0) {
-                count += 1;
-                printf("Variable changed to: %d\n", count);
+            pin_on();
+            sleep(1);
+            pin_off();
             }
             break;
         case LWS_CALLBACK_CLIENT_WRITEABLE:
@@ -34,6 +38,12 @@ static int callback_ws(struct lws *wsi, enum lws_callback_reasons reason, void *
 }
 
 int main(void) {
+
+    unexport_gpio();
+    export_gpio();
+    set_gpio_direction_out();
+
+
     struct lws_context_creation_info info;
     memset(&info, 0, sizeof info);
 
@@ -52,11 +62,11 @@ int main(void) {
     // Client connection
     struct lws_client_connect_info ccinfo = {0};
     ccinfo.context = context;
-    ccinfo.address = "192.168.182.128";
+    ccinfo.address = "207.23.207.85";
     ccinfo.port = 3000;
     ccinfo.path = "/ws";
     ccinfo.host = lws_canonical_hostname(context);
-    ccinfo.origin = "http://192.168.182.128";
+    ccinfo.origin = "http://207.23.207.85";
     ccinfo.protocol = protocols[0].name;
 
     struct lws *wsi = lws_client_connect_via_info(&ccinfo);

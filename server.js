@@ -72,6 +72,7 @@ app.get('/trigger', (req, res) => {
             client.send('changeVariable');
         }
     });
+    res.header("Access-Control-Allow-Origin", "http://192.168.182.128:8080");
     res.send('Trigger sent to BeagleBone');
 });
 

@@ -1,6 +1,6 @@
 var http = require('http'); // Import Node.js core module
 
-const hostname = '192.168.182.128"';
+const hostname = '192.168.182.128';
 const port = 5000;
 const websocketPort = 3000;
 const express = require('express');
@@ -9,11 +9,11 @@ const WebSocket = require('ws');
 const cors = require('cors');
 
 const corsOptions = {
-    origin: 'http://192.168.182.128/trigger', // Replace with the origin you are sending requests from
+    origin: 'http://192.168.182.128:5000/trigger', // Replace with the origin you are sending requests from
     optionsSuccessStatus: 200 // Some legacy browsers (IE11, various SmartTVs) choke on 204
 };
 
-app.use(cors(cors(corsOptions)));
+app.use(cors());
 
 var server = http.createServer(function (req, res) {   //create web server
     if (req.url == '/') { //check the URL of the current request
@@ -76,5 +76,5 @@ app.get('/trigger', (req, res) => {
 });
 
 app.listen(port, '0.0.0.0', () => {
-    console.log('Server is listening at http://${hostname}:${port}/');
+    console.log(`Server is listening at http://${hostname}:${port}/`);
 });

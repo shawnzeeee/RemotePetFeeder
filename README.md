@@ -1,4 +1,4 @@
-# ENSC351_PROJECT
+# Remote Pet Feeder
 
 1) After cloning project
 ```
